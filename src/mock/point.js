@@ -99,7 +99,7 @@ const createRandomPoint = () => {
     destination: getRandomIntegerWitinRange(0, DESTINATIONS.length - 1),
     basePrice: Type[keeType].price,
     offers: createOffersIndexes(Offer[keeType]),
-    isFavourite: Boolean(getRandomIntegerWitinRange(0, 1)),
+    isFavorite: Boolean(getRandomIntegerWitinRange(0, 1)),
   });
 };
 
