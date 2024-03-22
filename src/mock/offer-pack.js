@@ -1,4 +1,4 @@
-const Offer = {
+const OfferPack = {
   TAXI: [
     {
       title: 'Order Uber',
@@ -59,4 +59,4 @@ const Offer = {
   RESTAURANT: [],
 };
 
-export { Offer };
+export { OfferPack };

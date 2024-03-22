@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { getRandomIntegerWitinRange, createUniqueNumberGenerator, getRandomArrayElement, sortArrayToIncrease } from '../utils.js';
 import { DESTINATIONS } from './destination.js';
-import { Offer } from './offer.js';
+import { OfferPack } from './offer-pack.js';
 // const test = {
 //   type: '',
 //   dateFrom: '',
@@ -98,7 +98,7 @@ const createRandomPoint = () => {
     dateTo: increaseDate(startDate),
     destination: getRandomIntegerWitinRange(0, DESTINATIONS.length - 1),
     basePrice: Type[keeType].price,
-    offers: createOffersIndexes(Offer[keeType]),
+    offers: createOffersIndexes(OfferPack[keeType]),
     isFavorite: Boolean(getRandomIntegerWitinRange(0, 1)),
   });
 };
