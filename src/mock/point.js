@@ -1,5 +1,7 @@
-import { getRandomIntegerWitinRange, getRandomArrayElement, getSomeRandomArrayElements } from '../utils.js';
-
+import dayjs from 'dayjs';
+import { getRandomIntegerWitinRange, createUniqueNumberGenerator, getRandomArrayElement, sortArrayToIncrease } from '../utils.js';
+import { DESTINATIONS } from './destination.js';
+import { Offer } from './offer.js';
 // const test = {
 //   type: '',
 //   dateFrom: '',
@@ -21,39 +23,11 @@ import { getRandomIntegerWitinRange, getRandomArrayElement, getSomeRandomArrayEl
 //   }],
 //   isFavourite: false,
 // };
-
-const PICTURE_RANDOM_PLACEHOLDER_BASE_SRC = 'https://loremflickr.com/248/152?random=';
-const MAX_RANDOM_PICTURE_SRC_NUMBER = 10000;
-
-const DESTINATIONS = [
-  'Geneva',
-  'Amsterdam',
-  'Chamonix',
-  'Annecy',
-];
-
-const MOCK_TEXTS = [
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  'Cras aliquet varius magna, non porta ligula feugiat eget.',
-  'Fusce tristique felis at fermentum pharetra.',
-  'Aliquam id orci ut lectus varius viverra.',
-  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
-  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
-  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
-  'Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat.',
-  'Nunc fermentum tortor ac porta dapibus.',
-  'In rutrum ac purus sit amet tempus.',
-];
-
-const DestinationDescriptionCloseLimit = {
-  MIN: 1,
-  MAX: 5,
-};
-
-const DestinationPicturesQuantity = {
-  MIN: 0,
-  MAX: 5,
-};
+const MONTHS_QIANTITY = 12;
+const DAYS_QUANTITY = 31;
+const HOURS_QUANTITY = 23;
+const MINUTES_QUANTITY = 59;
+const MINUTES_IN_DAY = 1440;
 
 const Type = {
   TAXI: {
@@ -81,7 +55,7 @@ const Type = {
     price: 160,
   },
   CHECK_IN: {
-    type: 'check_in',
+    type: 'check-in',
     price: 600,
   },
   SIGHTSEEING: {
@@ -94,118 +68,39 @@ const Type = {
   },
 };
 
-const Offer = {
-  TAXI: [
-    {
-      title: 'Order Uber',
-      price: 20,
-    },
-    {
-      title: 'Upgrade to a business class',
-      price: 120,
-    },
-  ],
-  FLIGHT: [
-    {
-      title: 'Add luggage',
-      price: 30,
-    },
-    {
-      title: 'Switch to comfort class',
-      price: 100,
-    },
-    {
-      title: 'Add meal',
-      price: 15,
-    },
-    {
-      title: 'Choose seats',
-      price: 5,
-    },
-    {
-      title: 'Travel by train',
-      price: 40,
-    },
-  ],
-  DRIVE: [
-    {
-      title: 'Rent a car',
-      price: 200,
-    },
-  ],
-  CHECK_IN: [
-    {
-      title: 'Add breakfast',
-      price: 50,
-    },
-  ],
-  SIGHTSEEING: [
-    {
-      title: 'Book tickets',
-      price: 40,
-    },
-    {
-      title: 'Lunch in city',
-      price: 30,
-    },
-  ],
-};
+const createRandomDate = () => new Date(2024, getRandomIntegerWitinRange(1, MONTHS_QIANTITY), getRandomIntegerWitinRange(1, DAYS_QUANTITY), getRandomIntegerWitinRange(0, HOURS_QUANTITY), getRandomIntegerWitinRange(0, MINUTES_QUANTITY));
 
-const createRandomDate = () => new Date(2024, getRandomIntegerWitinRange(1, 12), getRandomIntegerWitinRange(1, 31), getRandomIntegerWitinRange(0, 23), getRandomIntegerWitinRange(0, 59));
+const increaseDate = (initDate) => dayjs(initDate).add(getRandomIntegerWitinRange(0, MINUTES_IN_DAY), 'm').toDate();
 
-const increaseDate = (initDate) => {
-  const newDate = new Date(initDate);
+const createOffersIndexes = (offers) => {
+  const indexes = [];
 
-  const minutes = newDate.getMinutes();
-  newDate.setMinutes(minutes + getRandomIntegerWitinRange(0, 59));
-
-  const hours = newDate.getHours();
-  newDate.setHours(hours + getRandomIntegerWitinRange(0, 23));
-
-  return newDate;
-};
-
-const createPicturesArray = (destinationPoint) => {
-  const pictures = [];
-  let picturesQuantity = getRandomIntegerWitinRange(DestinationPicturesQuantity.MIN, DestinationPicturesQuantity.MAX);
-
-  while (picturesQuantity > 0) {
-    const newPicture = {
-      src: `${PICTURE_RANDOM_PLACEHOLDER_BASE_SRC}${getRandomIntegerWitinRange(0, MAX_RANDOM_PICTURE_SRC_NUMBER)}`,
-      description: `${destinationPoint} is a beatiful place for the ${picturesQuantity} time`,
-    };
-    pictures.push(newPicture);
-
-    picturesQuantity--;
+  if (offers.length >= 1) {
+    const getUniqueId = createUniqueNumberGenerator(0, offers.length - 1);
+    for (let i = 0; i <= getRandomIntegerWitinRange(0, offers.length - 1); i++) {
+      const newIndex = getUniqueId();
+      indexes.push(newIndex);
+    }
   }
 
-  return pictures;
-};
+  sortArrayToIncrease(indexes);
 
-const createDestination = () => {
-  const destinationPoint = getRandomArrayElement(DESTINATIONS);
-
-  return ({
-    name: destinationPoint,
-    description: getSomeRandomArrayElements(MOCK_TEXTS, getRandomIntegerWitinRange(DestinationDescriptionCloseLimit.MIN, DestinationDescriptionCloseLimit.MAX)).join(' '),
-    pictures: createPicturesArray(destinationPoint),
-  });
+  return indexes;
 };
 
 const createRandomPoint = () => {
   const type = Type[getRandomArrayElement(Object.keys(Type))].type;
+  const keeType = type.replace('-', '_').toUpperCase();
   const startDate = createRandomDate();
   return ({
     type: type,
     dateFrom: startDate,
     dateTo: increaseDate(startDate),
-    destination: createDestination(),
-    basePrice: Type[type.toUpperCase()].price,
-    offers: getSomeRandomArrayElements(Offer[type.toUpperCase()], getRandomIntegerWitinRange(0, Offer[type.toUpperCase()].length)),
+    destination: getRandomIntegerWitinRange(0, DESTINATIONS.length - 1),
+    basePrice: Type[keeType].price,
+    offers: createOffersIndexes(Offer[keeType]),
     isFavourite: Boolean(getRandomIntegerWitinRange(0, 1)),
   });
 };
-
-// const createRandomPoints = () => Array.from({length: POINTS_QUANTITY}, createRandomPoint);
 
 export { createRandomPoint };

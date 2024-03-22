@@ -1,24 +1,60 @@
 import { createElement } from '../render.js';
+import { getInteger, getStringWithUpperCaseFirst, formatFullDate, formatDate, formatTime, getDuration } from '../utils.js';
 
-const createPointItemTemplate = () =>
-  `<li class="trip-events__item">
-    <div class="event">
-      <time class="event__date" datetime="2019-03-18">MAR 18</time>
-      <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
-      </div>
-      <h3 class="event__title">Taxi Amsterdam</h3>
-      <div class="event__schedule">
-        <p class="event__time">
-          <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
-          &mdash;
-          <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
-        </p>
-        <p class="event__duration">30M</p>
-      </div>
-      <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">20</span>
+const createEventDateTemplate = (startDate) => (
+  `<time class="event__date" datetime=${formatFullDate(startDate)}>${formatDate(startDate)}</time>`
+);
+
+const createEventTypeTemplate = (type) => (
+  `<div class="event__type">
+  <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
+  </div>`
+);
+
+const createEventScheduleTemplate = (startDate, endDate) => {
+  const difference = getDuration(startDate, endDate);
+  const days = difference.format('DD');
+  const hours = difference.format('HH');
+  const minutes = difference.format('mm');
+
+  const createDaysTemplate = () => (getInteger(days) ? `${days}D` : '');
+  const createHoursTemplate = () => (!(getInteger(days) || getInteger(hours)) ? '' : `${hours}H`);
+
+  return (
+    `<div class="event__schedule">
+      <p class="event__time">
+        <time class="event__start-time" datetime=${formatFullDate(startDate)}>${formatTime(startDate)}</time>
+        &mdash;
+        <time class="event__end-time" datetime=${formatFullDate(endDate)}>${formatTime(endDate)}</time>
       </p>
+      <p class="event__duration">
+        ${createDaysTemplate()} ${createHoursTemplate()} ${minutes}M
+      </p>
+    </div>`
+  );
+};
+
+const createEventTitleTemplate = (type, name) => (
+  `<h3 class="event__title">${getStringWithUpperCaseFirst(type)} ${name}</h3>`
+);
+
+const createEventPriceTemplate = (price) => (
+  `<p class="event__price">
+    &euro;&nbsp;<span class="event__price-value">${price}</span>
+  </p>`
+);
+
+const createPointItemTemplate = (point, destination) => {
+  const {type, dateFrom, dateTo, basePrice} = point;
+  const {name} = destination;
+
+  return (`<li class="trip-events__item">
+    <div class="event">
+      ${createEventDateTemplate(dateFrom)}
+      ${createEventTypeTemplate(type)}
+      ${createEventTitleTemplate(type, name)}
+      ${createEventScheduleTemplate(dateFrom, dateTo)}
+      ${createEventPriceTemplate(basePrice)}
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
         <li class="event__offer">
@@ -37,11 +73,17 @@ const createPointItemTemplate = () =>
         <span class="visually-hidden">Open event</span>
       </button>
     </div>
-  </li>`;
+  </li>`);
+};
 
 export default class PointItemView {
+  constructor({point, destination}) {
+    this.point = point;
+    this.destination = destination;
+  }
+
   getTemplate() {
-    return createPointItemTemplate();
+    return createPointItemTemplate(this.point, this.destination);
   }
 
   getElement() {

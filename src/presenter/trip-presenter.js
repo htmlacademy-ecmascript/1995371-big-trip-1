@@ -20,6 +20,7 @@ export default class TripPresenter {
 
   init() {
     this.tripPoints = [...this.pointsModel.getPoints()];
+    this.destinations = [...this.pointsModel.getDestinations()];
 
     render(new TripInfoView(), this.tripInfoContainer, RenderPosition.AFTERBEGIN);
     render(new FilterView(), this.filterContainer);
@@ -29,7 +30,7 @@ export default class TripPresenter {
     render(new PointEditView(), this.pointsListItemComponent.getElement());
 
     for (let i = 0; i < this.tripPoints.length; i++) {
-      render(new PointItemView({point: this.tripPoints[i]}), this.pointsListComponent.getElement());
+      render(new PointItemView({point: this.tripPoints[i], destination: this.destinations[this.tripPoints[i].destination]}), this.pointsListComponent.getElement());
     }
   }
 }
