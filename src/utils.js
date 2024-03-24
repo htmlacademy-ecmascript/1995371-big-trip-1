@@ -42,6 +42,16 @@ const getStringWithUpperCaseFirst = (string) => {
   return string[0].toUpperCase() + string.slice(1);
 };
 
+const hyphenOrWhiteSpaceRegExp = /[-|\s]+/g;
+
+const formatToScreamingSnakeCase = (string) => {
+  if (!string) {
+    return string;
+  }
+
+  return string.replace(hyphenOrWhiteSpaceRegExp, '_').toUpperCase();
+};
+
 // Functions for Array
 const shuffleArray = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -65,10 +75,12 @@ const sortArrayToIncrease = (array) => array.sort((a, b) => (a - b));
 // Date formatting
 const SHORT_DATE_FORMAT = 'MMM D';
 const TIME_FORMAT = 'HH:mm';
+const FULL_DATE_FORMAT = 'YY/MM/DD HH:mm';
 
 const formatSomeDate = (date, format) => date ? dayjs(date).format(format ? format : '') : '';
 
 const formatFullDate = (date) => formatSomeDate(date);
+const huminizeFullDate = (date) => formatSomeDate(date, FULL_DATE_FORMAT);
 const formatDate = (date) => formatSomeDate(date, SHORT_DATE_FORMAT);
 const formatTime = (date) => formatSomeDate(date, TIME_FORMAT);
 
@@ -80,11 +92,13 @@ export {
   getRandomIntegerWitinRange,
   createUniqueNumberGenerator,
   getStringWithUpperCaseFirst,
+  formatToScreamingSnakeCase,
   shuffleArray,
   getRandomArrayElement,
   getSomeRandomArrayElements,
   sortArrayToIncrease,
   formatFullDate,
+  huminizeFullDate,
   formatDate,
   formatTime,
   getDuration,

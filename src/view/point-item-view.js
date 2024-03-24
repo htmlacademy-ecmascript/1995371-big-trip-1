@@ -1,10 +1,10 @@
 import { createElement } from '../render.js';
 
-const createPointItemEmptyTemplate = () => '<li class="trip-events__item"></li>';
+const createPointItemTemplate = () => '<li class="trip-events__item"></li>';
 
-export default class PointItemEmptyView {
+export default class PointItemView {
   getTemplate() {
-    return createPointItemEmptyTemplate();
+    return createPointItemTemplate();
   }
 
   getElement() {

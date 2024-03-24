@@ -5,7 +5,7 @@ import FilterView from '../view/filter-view.js';
 import SortView from '../view/sort-view.js';
 import PointEditView from '../view/point-edit-view.js';
 import PointsListView from '../view/points-list-view.js';
-import PointItemEmptyView from '../view/point-item-empty-view.js';
+import PointItemView from '../view/point-item-view.js';
 
 import PointView from '../view/point-view/point-view.js';
 import DateView from '../view/point-view/date-view.js';
@@ -21,7 +21,7 @@ import ButtonRollupView from '../view/point-view/button-rollup-view.js';
 
 export default class TripPresenter {
   pointsListComponent = new PointsListView();
-  pointsListItemComponent = new PointItemEmptyView();
+  pointsListItemComponent = new PointItemView();
 
   constructor({tripInfoContainer, filterContainer, tripPointsContainer, pointsModel}) {
     this.tripInfoContainer = tripInfoContainer;
@@ -34,24 +34,26 @@ export default class TripPresenter {
     this.tripPoints = [...this.pointsModel.getPoints()];
     this.destinations = [...this.pointsModel.getDestinations()];
     this.offerPack = structuredClone(this.pointsModel.getOfferPack());
+    this.typePack = structuredClone(this.pointsModel.getTypePack());
 
     render(new TripInfoView(), this.tripInfoContainer, RenderPosition.AFTERBEGIN);
     render(new FilterView(), this.filterContainer);
     render(new SortView(), this.tripPointsContainer);
     render(this.pointsListComponent, this.tripPointsContainer);
     render(this.pointsListItemComponent, this.pointsListComponent.getElement());
-    render(new PointEditView(), this.pointsListItemComponent.getElement());
+    render(new PointEditView(this.typePack, this.destinations, this.offerPack), this.pointsListItemComponent.getElement());
 
     for (let i = 0; i < this.tripPoints.length; i++) {
+      const currentPointItemComponent = this.pointsListComponent.getElement();
       const currentPoint = this.tripPoints[i];
       const currentPointKeyType = currentPoint.type.replace('-', '_').toUpperCase();
-      const currentDestination = this.destinations[currentPoint.destination];
+      const currentDestination = this.destinations.find((destination) => destination.id === currentPoint.destination);
 
-      const newItemComponent = new PointItemEmptyView();
+      const newItemComponent = new PointItemView();
       const newPointComponent = new PointView();
       const offersListComponent = new OffersListView();
 
-      render(newItemComponent, this.pointsListComponent.getElement());
+      render(newItemComponent, currentPointItemComponent);
       render(newPointComponent, newItemComponent.getElement());
       render(new DateView(currentPoint), newPointComponent.getElement());
       render(new TypeView(currentPoint), newPointComponent.getElement());
@@ -61,12 +63,17 @@ export default class TripPresenter {
       render(new OffersListTitleView(), newPointComponent.getElement());
       render(offersListComponent, newPointComponent.getElement());
 
-      currentPoint.offers.forEach((offerIndex) => {
-        render(new OfferView(this.offerPack[currentPointKeyType][offerIndex]), offersListComponent.getElement());
+      currentPoint.offers.forEach((offerId) => {
+        const currentOffer = this.offerPack[currentPointKeyType].find((offer) => offer.id === offerId);
+        if (currentOffer) {
+          render(new OfferView(currentOffer), offersListComponent.getElement());
+        }
       });
 
       render(new ButtonFavoriteView(currentPoint), newPointComponent.getElement());
       render(new ButtonRollupView(), newPointComponent.getElement());
+
+      render(new PointEditView(this.typePack, this.destinations, this.offerPack, currentPoint), currentPointItemComponent);
     }
   }
 }

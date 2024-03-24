@@ -1,5 +1,6 @@
 const DESTINATIONS = [
   {
+    id: 0,
     name: 'Geneva',
     description: 'Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.',
     pictures: [
@@ -18,6 +19,7 @@ const DESTINATIONS = [
     ]
   },
   {
+    id: 1,
     name: 'Amsterdam',
     description: '',
     pictures: [
@@ -32,11 +34,13 @@ const DESTINATIONS = [
     ]
   },
   {
+    id: 2,
     name: 'Chamonix',
     description: 'Aliquam id orci ut lectus varius viverra. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
     pictures: []
   },
   {
+    id: 3,
     name: 'Annecy',
     description: 'Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
     pictures: [

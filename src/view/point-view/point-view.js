@@ -1,10 +1,10 @@
 import { createElement } from '../../render.js';
 
-const createPointItemTemplate = () => '<div class="event"></div>';
+const createPointTemplate = () => '<div class="event"></div>';
 
 export default class PointView {
   getTemplate() {
-    return createPointItemTemplate();
+    return createPointTemplate();
   }
 
   getElement() {

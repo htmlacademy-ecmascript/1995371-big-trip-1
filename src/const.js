@@ -1,5 +1,8 @@
 const POINTS_QUANTITY = 3;
 
-const BUTTON_FAVORITE_ACTIVE_CLASSNAME = 'event__favorite-btn--active';
+const ButtonFavoriteClassName = {
+  BASE: 'event__favorite-btn',
+  ACTIVE: 'event__favorite-btn--active',
+};
 
-export { POINTS_QUANTITY, BUTTON_FAVORITE_ACTIVE_CLASSNAME };
+export { POINTS_QUANTITY, ButtonFavoriteClassName };
