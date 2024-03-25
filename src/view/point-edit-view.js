@@ -161,7 +161,8 @@ const createPointEditTemplate = (typePack, destinations, offerPack, currentPoint
         ${createTimeTemplate(editedPoint)}
         ${createPriceTemplate(editedPoint)}
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__reset-btn" type="reset">${currentPoint ? 'Delete' : 'Cancel'}</button>
+        ${currentPoint ? '<button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>' : ''}
       </header>
       <section class="event__details">
         ${createOffersTemplate(editedPoint, offerPack[keyType])}
