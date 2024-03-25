@@ -43,7 +43,9 @@ export default class TripPresenter {
 
       render(newItemComponent, this.pointsListComponent.getElement());
       render(new PointView(currentPoint, currentDestination, currentTypeFullOffers), newItemComponent.getElement());
-      render(new PointEditView(this.typePack, this.destinations, this.offerPack, currentPoint), newItemComponent.getElement());
+
+      // Посмотреть, как рендерится форма редактирования созданных точек:
+      // render(new PointEditView(this.typePack, this.destinations, this.offerPack, currentPoint), newItemComponent.getElement());
     }
   }
 }
