@@ -45,7 +45,7 @@ const DESTINATIONS = [
     description: 'Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
     pictures: [
       {
-        src: 'https://loremflickr.com/248/152?random=346346',
+        src: 'https://loremflickr.com/248/152?random=346',
         description: '',
       },
       {
@@ -53,7 +53,7 @@ const DESTINATIONS = [
         description: '',
       },
       {
-        src: 'https://loremflickr.com/248/152?random=6346',
+        src: 'https://loremflickr.com/248/152?random=63',
         description: '',
       },
       {

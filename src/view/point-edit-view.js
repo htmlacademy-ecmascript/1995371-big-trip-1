@@ -26,23 +26,6 @@ const createTypeItemTemplate = (pointType, currentType) => {
   );
 };
 
-const createTypeListTemplate = (point, types) => {
-  let itemsTemplate = '';
-  types.forEach((element) => {
-    itemsTemplate = itemsTemplate + createTypeItemTemplate(point.type, element);
-  });
-
-  return (
-    `<div class="event__type-list">
-      <fieldset class="event__type-group">
-        <legend class="visually-hidden">Event type</legend>
-          ${itemsTemplate}
-        </div>
-      </fieldset>
-    </div>`
-  );
-};
-
 const createTypeTemplate = (point, types) => (
   `<div class="event__type-wrapper">
     <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -50,32 +33,25 @@ const createTypeTemplate = (point, types) => (
       <img class="event__type-icon" width="17" height="17" src="img/icons/${point.type}.png" alt="Event type icon">
     </label>
     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-    ${createTypeListTemplate(point, types)}
+    <div class="event__type-list">
+    <fieldset class="event__type-group">
+      <legend class="visually-hidden">Event type</legend>
+        ${types.map((element) => createTypeItemTemplate(point.type, element)).join('')}
+      </div>
+    </fieldset>
+  </div>
   </div>`
 );
 
-const createDestinationList = (destinations, currentDestination) => {
-  const currentDestinationName = currentDestination ? currentDestination.name : '';
-  let options = '';
-  destinations.forEach((element) => {
-    options = `${options}
-    <option value="${element.name}"></option>`;
-  });
-
-  return (
-    `<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestinationName}" list="destination-list-1">
-      <datalist id="destination-list-1">
-        ${options}
-    </datalist>`
-  );
-};
-
-const createDestinationTemplate = (point, destinations, currentDestination) => (
+const createDestinationWithTypeTemplate = (point, destinations, currentDestination) => (
   `<div class="event__field-group  event__field-group--destination">
     <label class="event__label  event__type-output" for="event-destination-1">
       ${getStringWithUpperCaseFirst(point.type)}
     </label>
-    ${createDestinationList(destinations, currentDestination)}
+    ${`<input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestination ? currentDestination.name : ''}" list="destination-list-1">`}
+    ${`<datalist id="destination-list-1">
+        ${destinations.map((element) => `<option value="${element.name}"></option>`).join('')}
+      </datalist>`}
   </div>`
 );
 
@@ -125,41 +101,31 @@ const createOffersTemplate = (point, offers) => {
   }
 
   const checkedOffersIds = point.offers;
-  let offersListTemplate = '';
 
-  offers.forEach((offer) => {
+  const offersList = offers.map((offer) => {
     const isChecked = checkedOffersIds ? checkedOffersIds.some((checkedOfferId) => checkedOfferId === offer.id) : false;
-
-    offersListTemplate = offersListTemplate + createOfferTemplate(offer, isChecked);
-  });
+    return createOfferTemplate(offer, isChecked);
+  }).join('');
 
   return (
     `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
       <div class="event__available-offers">
-        ${offersListTemplate}
+        ${offersList}
       </div>
     </section>`
   );
 };
 
-const createPhotoTemplate = ({src, description}) => `<img class="event__photo" src="${src}" alt="${description}">`;
-
-const createPhotosContainerTemplate = (pictures) => {
+const createPhotosTemplate = (pictures) => {
   if(!pictures.length) {
     return '';
   }
 
-  let picturesTemplate = '';
-
-  pictures.forEach((picture) => {
-    picturesTemplate = picturesTemplate + createPhotoTemplate(picture);
-  });
-
   return (
     `<div class="event__photos-container">
       <div class="event__photos-tape">
-        ${picturesTemplate}
+        ${pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('')}
       </div>
     </div>`
   );
@@ -176,7 +142,7 @@ const createDestinationInfoTemplate = (currentDestination) => {
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${description}</p>
-      ${createPhotosContainerTemplate(pictures)}
+      ${createPhotosTemplate(pictures)}
     </section>`
   );
 };
@@ -191,7 +157,7 @@ const createPointEditTemplate = (typePack, destinations, offerPack, currentPoint
     `<form class="event event--edit" action="#" method="post">
       <header class="event__header">
         ${createTypeTemplate(editedPoint, types)}
-        ${createDestinationTemplate(editedPoint, destinations, currentDestination)}
+        ${createDestinationWithTypeTemplate(editedPoint, destinations, currentDestination)}
         ${createTimeTemplate(editedPoint)}
         ${createPriceTemplate(editedPoint)}
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
